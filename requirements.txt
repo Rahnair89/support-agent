@@ -1,0 +1,6 @@
+strands-agents[otel]
+fastapi
+uvicorn[standard]
+boto3
+pyyaml
+requests
