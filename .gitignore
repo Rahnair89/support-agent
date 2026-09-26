@@ -5,4 +5,6 @@ out/
 __pycache__/
 infra/.terraform/
 infra/*.tfstate*
-infra/build/
+infra/build/*.tfstate
+*.tfstate.*
+.terraform/
