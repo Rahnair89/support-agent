@@ -8,3 +8,6 @@
 | Terraform reported success but the NAT gateway still existed | AWS CLI | `terraform destroy` ran from the repo root against an empty state file | Check `pwd` and `terraform state list`; verify with `describe-nat-gateways` |
 | Credential errors in one tab only | Terraform, AWS CLI | `dev-shell.sh` had an unterminated quote and failed halfway | `bash -n script.sh` before sourcing |
 | `/health` 200 but `/chat` 500 | curl, CloudWatch Logs | Container still had the Claude model ID; only `.env` was updated | Deployed config comes from `terraform.tfvars`, not `.env` |
+| terraform destroy says "0 destroyed" but resources exist | Terminal | Ran from a directory with no .tf files, against an empty state | Use `terraform -chdir=infra destroy`; verify with `aws ec2 describe-nat-gateways` |
+| Docker build fails with a SyntaxError on a line of prose | Build output | Document footer copied in with the code block | Rewrite with `cat > file <<'EOF'`; `grep -rn "<footer text>"` to find others |
+| create-secret fails: SecretString length 0 | Terminal | `read -s` shows nothing, so a failed paste looks identical to a successful one | Check `echo ${#VAR}` before using the value |
