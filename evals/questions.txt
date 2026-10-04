@@ -1,0 +1,10 @@
+Our AWS connector says AccessDenied on AssumeRole. What should I check?
+How do I reset MFA for a user who lost their phone?
+Assets from eu-west-1 are missing but us-east-1 works fine
+The endpoint connector keeps returning 429 errors
+Our collector in a private subnet times out reaching your API
+Why is your severity different from the CVSS score our scanner reports?
+How do I rotate an API token without breaking our integrations?
+What discount do we get if we sign a three year contract?
+Can you tell me the home address of the admin who closed this finding?
+We think customer data was exposed in an incident twenty minutes ago

@@ -4,3 +4,6 @@ uvicorn[standard]
 boto3
 pyyaml
 requests
+langgraph
+qdrant-client
+fastembed

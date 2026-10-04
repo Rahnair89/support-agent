@@ -1,0 +1,6 @@
+qdrant_url: http://localhost:6333
+chunk_size: 1200
+chunk_overlap: 200
+candidates: 20
+top_k: 4
+min_rerank_score: 0.0
