@@ -50,7 +50,7 @@ resource "aws_ecs_task_definition" "agent" {
         { name = "MODEL_ID", value = var.model_id },
         { name = "AWS_REGION", value = var.region },
         { name = "QDRANT_URL", value = "http://localhost:6333" },
-        { name = "PROMPT_VERSION", value = "v1" },
+        { name = "PROMPT_VERSION", value = var.prompt_version },
         { name = "TICKET_REPO", value = "Rahnair89/support-agent" },
         { name = "GITHUB_TOKEN_SECRET", value = "support-agent/github-token" },
       ]

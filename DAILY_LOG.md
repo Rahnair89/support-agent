@@ -34,3 +34,11 @@
 - Tomorrow: finish Thursday — deploy.sh, terraform -chdir=infra apply, confirm
   "Ingested N chunks" in the app log stream, test /chat and /ticket through the
   ALB, then Friday's prompt comparison, tracing and demo.
+
+## Day 5 — 2026-10-06
+- Prompt comparison: v2 adds a required structure (one-sentence cause, numbered
+  steps, "Escalate if" line) and a 200-word cap.
+- Result: escalation count unchanged at 3/10, sources identical, total output
+  dropped from X to Y words.
+- Shipping v2: same safety behaviour, answers a customer can act on without
+  re-reading, and fewer output tokens per conversation.

@@ -3,6 +3,8 @@ import time
 
 import boto3
 import requests
+from strands.telemetry import StrandsTelemetry
+StrandsTelemetry().setup_console_exporter()
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
