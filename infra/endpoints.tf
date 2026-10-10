@@ -10,7 +10,7 @@ resource "aws_security_group" "vpce" {
   }
 }
 resource "aws_vpc_endpoint" "interface" {
-  for_each            = toset(["bedrock-runtime", "ecr.api", "ecr.dkr", "logs", "secretsmanager"])
+  for_each = toset(["bedrock-runtime", "ecr.api", "ecr.dkr", "logs", "secretsmanager", "ssmmessages"])
   vpc_id              = module.vpc.vpc_id
   service_name        = "com.amazonaws.${var.region}.${each.value}"
   vpc_endpoint_type   = "Interface"

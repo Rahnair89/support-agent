@@ -33,4 +33,11 @@ resource "aws_security_group" "app" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  egress {
+ description = "OTLP to OpenObserve inside the VPC"
+ from_port = 5080
+ to_port = 5080
+ protocol = "tcp"
+ cidr_blocks = [module.vpc.vpc_cidr_block]
+ }
 }

@@ -51,3 +51,37 @@ resource "aws_iam_role_policy" "task" {
   role   = aws_iam_role.task.id
   policy = data.aws_iam_policy_document.task.json
 }
+data "aws_secretsmanager_secret" "o2" {
+ name = "observability/openobserve"
+}
+# Execution role: inject O2_AUTH into the collector container
+resource "aws_iam_role_policy" "execution_secrets" {
+ name = "read-openobserve-secret"
+ role = aws_iam_role.execution.id
+ policy = jsonencode({
+ Version = "2012-10-17"
+ Statement = [{
+ Effect = "Allow"
+ Action = ["secretsmanager:GetSecretValue"]
+ Resource = [data.aws_secretsmanager_secret.o2.arn]
+ }]
+ })
+}
+# Task role: collector writes spans to X-Ray; ECS Exec needs ssmmessages
+resource "aws_iam_role_policy_attachment" "task_xray" {
+ role = aws_iam_role.task.name
+ policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
+}
+resource "aws_iam_role_policy" "task_exec" {
+ name = "ecs-exec"
+ role = aws_iam_role.task.id
+ policy = jsonencode({
+ Version = "2012-10-17"
+ Statement = [{
+ Effect = "Allow"
+ Action = ["ssmmessages:CreateControlChannel", "ssmmessages:CreateDataChannel",
+ "ssmmessages:OpenControlChannel", "ssmmessages:OpenDataChannel"]
+ Resource = "*"
+ }]
+ })
+}
