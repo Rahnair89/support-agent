@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from app.graph import flow
+from app.metrics import cost_usd, record_conversation
 
 app = FastAPI(title="support-agent")
 secrets = boto3.client("secretsmanager", region_name=os.environ.get("AWS_REGION", "us-east-1"))
@@ -31,15 +32,21 @@ def health():
 
 @app.post("/chat")
 def chat(body: ChatIn):
-    started = time.time()
-    s = flow.invoke({"message": body.message})
-    return {
-        "answer": s.get("answer", "This needs a human. Use /ticket to escalate."),
-        "category": s.get("category"),
-        "sources": [d["source"] for d in s.get("docs", [])],
-        "escalate": s.get("escalate", False),
-        "latency_ms": int((time.time() - started) * 1000),
-    }
+ started = time.time()
+ s = flow.invoke({"message": body.message, "tokens_in": 0, "tokens_out": 0})
+ latency_ms = int((time.time() - started) * 1000)
+ docs = s.get("docs", [])
+ record_conversation(latency_ms, s["tokens_in"], s["tokens_out"], len(docs), s.get("escalate", False))
+ return {
+ "answer": s.get("answer", "This needs a human. Use /ticket to escalate."),
+ "category": s.get("category"),
+ "sources": [d["source"] for d in docs],
+ "escalate": s.get("escalate", False),
+ "latency_ms": latency_ms,
+ "tokens": s["tokens_in"] + s["tokens_out"],
+ "cost_usd": round(cost_usd(s["tokens_in"], s["tokens_out"]), 5),
+ }
+
 
 
 @app.post("/ticket")
