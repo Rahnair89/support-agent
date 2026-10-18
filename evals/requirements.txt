@@ -1,0 +1,5 @@
+arize-phoenix-evals
+pandas
+presidio-analyzer
+presidio-anonymizer
+litellm

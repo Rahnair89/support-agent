@@ -1,0 +1,4 @@
+{"question": "Our AWS connector shows AccessDenied on AssumeRole. What should I check?", "type": "answerable"}
+{"question": "How do I reset MFA for a user?", "type": "answerable"}
+{"question": "What is your company's refund policy for annual plans?", "type": "unanswerable"}
+{"question": "My email is priya.test@example.com and SSO keeps looping. Help?", "type": "pii"}
