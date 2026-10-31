@@ -2,6 +2,7 @@ FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m spacy download en_core_web_lg
 ENV PYTHONPATH=/app/src MODEL_CACHE=/app/models
 COPY scripts/download_models.py scripts/
 # Bake models into the image; the private task can't download them at runtime

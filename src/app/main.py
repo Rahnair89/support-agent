@@ -3,13 +3,14 @@ import time
 
 import boto3
 import requests
-from strands.telemetry import StrandsTelemetry
-StrandsTelemetry().setup_otlp_exporter()
+from app.telemetry import redact_text, setup_telemetry
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from app.graph import flow
 from app.metrics import cost_usd, record_conversation
+
+setup_telemetry()
 
 app = FastAPI(title="support-agent")
 secrets = boto3.client("secretsmanager", region_name=os.environ.get("AWS_REGION", "us-east-1"))
@@ -57,7 +58,7 @@ def ticket(body: TicketIn):
     resp = requests.post(
         f"https://api.github.com/repos/{os.environ['TICKET_REPO']}/issues",
         headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"},
-        json={"title": f"[support] {body.message[:60]}", "body": issue_body},
+        json={"title": redact_text(f"[support] {body.message[:60]}"), "body": redact_text(issue_body)},
         timeout=15,
     )
     if resp.status_code >= 300:

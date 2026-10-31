@@ -7,6 +7,8 @@ OpenTelemetry traces and CloudWatch EMF metrics.
 
 Built as a four-week learning project. The companion observability stack lives
 in [llm-observability-stack](https://github.com/Rahnair89/llm-observability-stack).
+![eval-gate](https://github.com/Rahnair89/support-agent/actions/workflows/eval-gate.yml/badge.svg)
+
 
 ## How a request flows
 

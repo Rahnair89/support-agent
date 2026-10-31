@@ -7,3 +7,5 @@ requests
 langgraph
 qdrant-client
 fastembed
+presidio-analyzer
+presidio-anonymizer
