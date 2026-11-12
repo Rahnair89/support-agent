@@ -10,6 +10,6 @@ variable "my_ip_cidr" {
   description = "Your laptop's public IP with /32, e.g. 49.207.10.20/32"
 }
 variable "prompt_version" {
- type = string
- default = "v1"
+  type    = string
+  default = "v1"
 }

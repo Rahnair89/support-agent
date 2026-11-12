@@ -56,22 +56,22 @@ resource "aws_ecs_task_definition" "agent" {
         { name = "OTEL_SERVICE_NAME", value = "support-agent" },
         { name = "OTEL_EXPORTER_OTLP_ENDPOINT", value = "http://localhost:4318" },
         {
- name = "otel-collector"
- image = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
- essential = false
- environment = [{ name = "AOT_CONFIG_CONTENT", value = file("${path.module}/collector.yaml") }]
- secrets = [
- { name = "O2_AUTH", valueFrom = "${data.aws_secretsmanager_secret.o2.arn}:basic::" },
- ]
- logConfiguration = {
- logDriver = "awslogs"
- options = {
- awslogs-group = aws_cloudwatch_log_group.agent.name
- awslogs-region = var.region
- awslogs-stream-prefix = "collector"
- }
- }
- }
+          name        = "otel-collector"
+          image       = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+          essential   = false
+          environment = [{ name = "AOT_CONFIG_CONTENT", value = file("${path.module}/collector.yaml") }]
+          secrets = [
+            { name = "O2_AUTH", valueFrom = "${data.aws_secretsmanager_secret.o2.arn}:basic::" },
+          ]
+          logConfiguration = {
+            logDriver = "awslogs"
+            options = {
+              awslogs-group         = aws_cloudwatch_log_group.agent.name
+              awslogs-region        = var.region
+              awslogs-stream-prefix = "collector"
+            }
+          }
+        }
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -92,7 +92,7 @@ resource "aws_ecs_service" "agent" {
   desired_count                     = 1
   launch_type                       = "FARGATE"
   health_check_grace_period_seconds = 120
-  enable_execute_command = true
+  enable_execute_command            = true
 
   network_configuration {
     subnets          = module.vpc.private_subnets
@@ -107,4 +107,8 @@ resource "aws_ecs_service" "agent" {
   }
 
   depends_on = [aws_lb_listener.http, aws_vpc_endpoint.interface, aws_vpc_endpoint.s3]
+
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
 }

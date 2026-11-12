@@ -9,3 +9,4 @@ infra/build/*.tfstate
 *.tfstate.*
 .terraform/
 infra/terraform.tfvars
+taskdef.json

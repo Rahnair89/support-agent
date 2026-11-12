@@ -1,0 +1,58 @@
+name: deploy-release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infra/release.auto.tfvars"
+      - "prompts/**"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  CLUSTER: support-agent
+  SERVICE: support-agent
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the prompt version being released
+        id: release
+        run: |
+          version=$(sed -n 's/.*prompt_version[[:space:]]*=[[:space:]]*"\(.*\)".*/\1/p' infra/release.auto.tfvars)
+          if [ -z "$version" ]; then
+            echo "could not read prompt_version from infra/release.auto.tfvars"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "releasing prompt_version=$version"
+
+      - name: Assume the deploy role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fetch the running task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition "$SERVICE" \
+            --query taskDefinition > taskdef.json
+
+      - name: Set PROMPT_VERSION
+        run: python3 scripts/render-taskdef.py taskdef.json "${{ steps.release.outputs.version }}"
+
+      - name: Register and deploy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: taskdef.json
+          service: ${{ env.SERVICE }}
+          cluster: ${{ env.CLUSTER }}
+          wait-for-service-stability: true
