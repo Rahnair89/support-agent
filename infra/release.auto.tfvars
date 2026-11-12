@@ -1,1 +1,1 @@
-prompt_version = "v3"
+prompt_version = "v2"
